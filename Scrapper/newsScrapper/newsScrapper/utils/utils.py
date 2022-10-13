@@ -16,9 +16,8 @@ def get_stock_id(name):
             "classic": "true",
             "query": name,
             "type": 1,
-            "format": "json",
-            "callback": "suggest1",
+            "format": "json"
         },
         timeout=5,
     )
-    return json.loads(res.text.split("(")[1][:-1])[0]["sc_id"]
+    return json.loads(res.text)[0]["sc_id"]

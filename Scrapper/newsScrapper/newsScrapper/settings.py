@@ -87,4 +87,4 @@ CONCURRENT_REQUESTS = 32
 # HTTPCACHE_IGNORE_HTTP_CODES = []
 # HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 
-FEED_EXPORT_ENCODING = "utf-8"
+# FEED_EXPORT_ENCODING = "utf-8"

@@ -1,6 +1,6 @@
-import bs4 as BeautifulSoup
+from bs4 import BeautifulSoup
 import scrapy
-import scrapy.selector as Selector
+from scrapy.selector import Selector
 from newsScrapper.items import NewsItem
 
 
@@ -48,13 +48,12 @@ class NewsSpider(scrapy.Spider):
             yield {"Not connected"}
         for story in stories:
             title = Selector(text=story).xpath(STORY_TITLE).get()
-            link = (
-                "https://economictimes.indiatimes.com"
-                + Selector(text=story).xpath(STORY_LINK).get()
-            )
-            type = Selector(text=story).xpath(STORY_TYPE).get().split("| ")[1]
-            date = Selector(text=story).xpath(STORY_DATE).get()
-            summary = Selector(text=story).xpath(STORY_SUMMARY).get()
+            link = "https://economictimes.indiatimes.com" + \
+                str(Selector(text=story).xpath(STORY_LINK).get())
+
+            type = str(Selector(text=story).xpath(STORY_TYPE).get()).split("| ")[1]
+            date=Selector(text=story).xpath(STORY_DATE).get()
+            summary=Selector(text=story).xpath(STORY_SUMMARY).get()
             yield scrapy.Request(
                 link,
                 callback=self.extract_article,
@@ -68,15 +67,15 @@ class NewsSpider(scrapy.Spider):
             )
 
     def extract_article(self, response):
-        html = scrapy.Selector(text=response.body).xpath(ARTICLEDIV).get()
+        html=scrapy.Selector(text=response.body).xpath(ARTICLEDIV).get()
         if html is None:
             return
-        data = text_from_html(html)
-        news = NewsItem()
-        news["title"] = response.meta.get("title")
-        news["url"] = response.meta.get("link")
-        news["type"] = response.meta.get("type")
-        news["date"] = response.meta.get("date")
-        news["summary"] = response.meta.get("summary")
-        news["article"] = data
+        data=text_from_html(html)
+        news=NewsItem()
+        news["title"]=response.meta.get("title")
+        news["url"]=response.meta.get("link")
+        news["type"]=response.meta.get("type")
+        news["date"]=response.meta.get("date")
+        news["summary"]=response.meta.get("summary")
+        news["article"]=data
         yield news
