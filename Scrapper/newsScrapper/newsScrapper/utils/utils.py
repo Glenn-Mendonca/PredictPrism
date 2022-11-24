@@ -18,6 +18,6 @@ def get_stock_id(name):
             "type": 1,
             "format": "json"
         },
-        timeout=5,
+        # timeout=5,
     )
     return json.loads(res.text)[0]["sc_id"]
