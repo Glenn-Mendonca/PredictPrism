@@ -16,6 +16,8 @@ DESC = '//h2[contains(@class,"article_desc")]'
 
 
 def remove_ascii(text):
+    if(text is None):
+        return text
     text = text.encode("ascii", "ignore")
     return text.decode()
 
@@ -24,6 +26,7 @@ def get_urls():
     """Get urls for scraping."""
     stocks = ["Reliance", "TCS", "HDFC Bank", "HUL", "Infosys", "ICICI Bank", "SBI", "Bharti Airtel", "Bajaj Finance", "HDFC", "ITC", "LIC India", "Adani Enterpris", "Kotak Mahindra", "Adani Total Gas", "Adani Trans", "Adani Green Ene", "Asian Paints", "Avenue Supermar", "Bajaj Finserv", "HCL Tech", "Larsen", "Maruti Suzuki", "Axis Bank", "Sun Pharma", "Titan Company", "Wipro", "Nestle", "UltraTechCement", "Adani Ports", "ONGC", "NTPC", "JSW Steel", "M&M", "Power Grid Corp", "Coal India", "Adani Power", "Pidilite Ind", "Tata Motors", "Tata Steel", "Hind Zinc", "SBI Life Insura", "HDFC Life", "Grasim", "Vedanta", "Bajaj Auto", "Ambuja Cements", "Tech Mahindra", "Siemens", "Eicher Motors", "IOC", "Dabur India",
               "Divis Labs", "IndusInd Bank", "Britannia", "Hindalco", "DLF", "Cipla", "Adani Wilmar", "Godrej Consumer", "SBI Card", "L&T Infotech", "Hindustan Aeron", "Havells India", "Shree Cements", "Bajaj Holdings", "Bharat Elec", "SRF", "ICICI Prudentia", "Dr Reddys Labs", "TATA Cons. Prod", "ABB India", "Varun Beverages", "Tata Power", "Bank of Baroda", "Interglobe Avi", "Marico", "BPCL", "Apollo Hospital", "United Spirits", "Berger Paints", "Chola Invest.", "IRCTC", "FSN E-Co Nykaa", "Page Industries", "GAIL", "ICICI Lombard", "Mindtree", "Torrent Pharma", "JSW Energy", "Zomato", "Tata Elxsi", "Schaeffler Ind", "Tube Investment", "TVS Motor", "Hero Motocorp", "INDUS TOWERS", "Patanjali Foods", "UPL", "Trent"]
+    # stocks = ["Reliance", "TCS", "HDFC Bank", "HUL"]
     stock_ids = [get_stock_id(stock) for stock in stocks]
     print(stock_ids)
     urls = [
@@ -56,6 +59,8 @@ class NewsSpider(scrapy.Spider):
                 "https://www.moneycontrol.com"
                 + str(Selector(text=news).xpath(LINK).get())
             )
+            if (Selector(text=news).xpath(DATETIME).get() == None):
+                continue
             temp = str(Selector(text=news).xpath(
                 DATETIME).get()).strip("\xa0|\xa0&nbsp;|&nbsp; Source: ")
             time, date = temp.split(" | ")
@@ -89,4 +94,5 @@ class NewsSpider(scrapy.Spider):
         news["time"] = response.meta.get("time")
         news["description"] = remove_ascii(desc)
         news["article"] = remove_ascii(data)
-        yield news
+        if(desc != None and data != ""):
+            yield news
